@@ -2,6 +2,7 @@ package com.demir.postmancollectiongenerator.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
@@ -31,9 +32,11 @@ public class PostmanCollectionGenerator {
     private String appName;
 
     @Autowired
-    private Environment environment; // Port numarasını dinamik olarak almak için kullanılır.
+    private Environment environment;
 
-    public void generatePostmanCollection(String outputPath) {
+    @PostConstruct
+    public void generatePostmanCollection() {
+        String outputPath="src/main/resources/postman_collection.json";
         try {
             Map<String, Object> postmanCollection = new HashMap<>();
             postmanCollection.put("info", Map.of(
