@@ -25,4 +25,4 @@ jobs:
       - name: Build and Publish
         run: mvn deploy -DskipTests
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHB_TOKEN }}
+          GITHB_TOKEN: ${{ secrets.GITHB_TOKEN }}
