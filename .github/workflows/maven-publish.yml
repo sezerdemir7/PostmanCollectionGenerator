@@ -21,6 +21,7 @@ jobs:
           server-id: github
           settings-path: ${{ github.workspace }}
 
+
       - name: Build and Publish
         run: mvn deploy -DskipTests
         env:
