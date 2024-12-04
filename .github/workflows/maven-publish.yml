@@ -3,7 +3,7 @@ name: Publish Maven Package
 on:
   push:
     branches:
-      - master
+      - main
 
 jobs:
   publish:
@@ -18,6 +18,8 @@ jobs:
         with:
           java-version: '21'
           distribution: 'temurin'
+          server-id: github
+          settings-path: ${{ github.workspace }}
 
       - name: Build and Publish
         run: mvn deploy -DskipTests
