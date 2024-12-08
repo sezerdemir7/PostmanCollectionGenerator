@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.demir</groupId>
     <artifactId>postman-collection-generator</artifactId>
-    <version>1.0.7</version>
+    <version>1.0.8</version>
     <packaging>jar</packaging>
     <name>PostmanCollectionGenerator</name>
     <description>Postman Collection Generator</description>
