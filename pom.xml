@@ -53,6 +53,10 @@
             <name>GitHub Packages</name>
             <url>https://maven.pkg.github.com/sezerdemir7/PostmanCollectionGenerator</url>
         </repository>
+        <snapshotRepository>
+            <id>github</id>
+            <url>https://maven.pkg.github.com/sezerdemir7/PostmanCollectionGenerator</url>
+        </snapshotRepository>
     </distributionManagement>
 
 
