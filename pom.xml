@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.demir</groupId>
     <artifactId>postman-collection-generator</artifactId>
-    <version>1.0.6</version>
+    <version>1.0.7</version>
     <packaging>jar</packaging>
     <name>PostmanCollectionGenerator</name>
     <description>Postman Collection Generator</description>
@@ -53,10 +53,6 @@
             <name>GitHub Packages</name>
             <url>https://maven.pkg.github.com/sezerdemir7/PostmanCollectionGenerator</url>
         </repository>
-        <snapshotRepository>
-            <id>github</id>
-            <url>https://maven.pkg.github.com/sezerdemir7/PostmanCollectionGenerator</url>
-        </snapshotRepository>
     </distributionManagement>
 
 
