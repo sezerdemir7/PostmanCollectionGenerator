@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.demir</groupId>
     <artifactId>postman-collection-generator</artifactId>
-    <version>1.0.9</version>
+    <version>1.0.11</version>
     <packaging>jar</packaging>
     <name>PostmanCollectionGenerator</name>
     <description>Postman Collection Generator</description>
@@ -64,6 +64,14 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.13.0</version>
+                <configuration>
+                    <release>17</release>
+                </configuration>
             </plugin>
         </plugins>
     </build>
