@@ -3,6 +3,7 @@ package com.demir.postmancollectiongenerator.config;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import jakarta.annotation.PostConstruct;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
@@ -22,16 +23,17 @@ import java.util.*;
 @Configuration
 public class PostmanCollectionGenerator {
 
-    private final RequestMappingHandlerMapping requestMappingHandlerMapping;
+    @Autowired
+    private RequestMappingHandlerMapping requestMappingHandlerMapping;
 
     @Value("${spring.application.name:Postman_Collection}")
     private String appName;
 
-    private final Environment environment;
+    @Autowired
+    private  Environment environment;
 
-    public PostmanCollectionGenerator(RequestMappingHandlerMapping requestMappingHandlerMapping, Environment environment) {
-        this.requestMappingHandlerMapping = requestMappingHandlerMapping;
-        this.environment = environment;
+    public PostmanCollectionGenerator() {
+
     }
 
     @PostConstruct
