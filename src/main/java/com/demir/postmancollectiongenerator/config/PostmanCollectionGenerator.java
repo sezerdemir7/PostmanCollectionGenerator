@@ -3,7 +3,6 @@ package com.demir.postmancollectiongenerator.config;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import jakarta.annotation.PostConstruct;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
@@ -20,30 +19,32 @@ import java.io.IOException;
 import java.lang.reflect.Parameter;
 import java.util.*;
 
-
-
 @Configuration
 public class PostmanCollectionGenerator {
 
-    @Autowired
-    private RequestMappingHandlerMapping requestMappingHandlerMapping;
+    private final RequestMappingHandlerMapping requestMappingHandlerMapping;
 
-    @Value("${spring.application.name}")
+    @Value("${spring.application.name:Postman_Collection}")
     private String appName;
 
-    @Autowired
-    private Environment environment;
+    private final Environment environment;
+
+    public PostmanCollectionGenerator(RequestMappingHandlerMapping requestMappingHandlerMapping, Environment environment) {
+        this.requestMappingHandlerMapping = requestMappingHandlerMapping;
+        this.environment = environment;
+    }
 
     @PostConstruct
     public void generatePostmanCollection() {
-        String outputPath="src/main/resources/postman_collection.json";
+        String outputPath = "src/main/resources/postman_collection.json";
         try {
             Map<String, Object> postmanCollection = new HashMap<>();
             postmanCollection.put("info", Map.of(
                     "_postman_id", UUID.randomUUID().toString(),
-                    "name", appName,
+                    "name", appName != null ? appName : "Postman_Collection",
                     "schema", "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
             ));
+
             List<Map<String, Object>> itemList = new ArrayList<>();
 
             ObjectMapper objectMapper = new ObjectMapper();
@@ -54,20 +55,24 @@ public class PostmanCollectionGenerator {
                 HandlerMethod handlerMethod = entry.getValue();
 
                 Set<String> patterns = getPatterns(mappingInfo);
-                if (patterns == null) {
+                if (patterns == null || patterns.isEmpty()) {
                     continue;
                 }
 
                 Set<RequestMethod> methods = mappingInfo.getMethodsCondition().getMethods();
+                if (methods == null || methods.isEmpty()) {
+                    continue;
+                }
 
                 for (String pattern : patterns) {
                     for (RequestMethod method : methods) {
                         Map<String, Object> requestDetails = createRequestDetails(pattern, method, handlerMethod, objectMapper);
-
-                        itemList.add(Map.of(
-                                "name", handlerMethod.getMethod().getName(),
-                                "request", requestDetails
-                        ));
+                        if (requestDetails != null) {
+                            itemList.add(Map.of(
+                                    "name", handlerMethod.getMethod().getName(),
+                                    "request", requestDetails
+                            ));
+                        }
                     }
                 }
             }
@@ -89,10 +94,8 @@ public class PostmanCollectionGenerator {
             patterns = mappingInfo.getPatternsCondition().getPatterns();
         } else if (mappingInfo.getPathPatternsCondition() != null) {
             patterns = mappingInfo.getPathPatternsCondition().getPatternValues();
-        } else {
-            System.out.println("No patterns found for method.");
         }
-        return patterns;
+        return patterns != null ? patterns : Collections.emptySet();
     }
 
     private Map<String, Object> createRequestDetails(String pattern, RequestMethod method, HandlerMethod handlerMethod, ObjectMapper objectMapper) throws IOException {
@@ -100,14 +103,11 @@ public class PostmanCollectionGenerator {
         requestDetails.put("method", method.name());
         requestDetails.put("header", Collections.emptyList());
 
-        // Dinamik port numarasını al
-        String port = environment.getProperty("local.server.port", "8080"); // Default olarak 8080
+        String port = environment.getProperty("local.server.port", "8080");
 
-        // URL configuration
         List<Map<String, String>> queryParameters = new ArrayList<>();
         StringBuilder rawUrl = new StringBuilder("http://localhost:" + port + pattern);
 
-        // Query parameters and path variables preparation
         Map<String, Object> bodyContent = new HashMap<>();
         boolean hasRequestBody = false;
 
@@ -126,10 +126,10 @@ public class PostmanCollectionGenerator {
         }
 
         if (!queryParameters.isEmpty()) {
-            rawUrl.append("?");
-            rawUrl.append(String.join("&", queryParameters.stream()
-                    .map(param -> param.get("key") + "=" + param.get("value"))
-                    .toArray(String[]::new)));
+            rawUrl.append("?")
+                    .append(String.join("&", queryParameters.stream()
+                            .map(param -> param.get("key") + "=" + param.get("value"))
+                            .toArray(String[]::new)));
         }
 
         requestDetails.put("url", Map.of(
