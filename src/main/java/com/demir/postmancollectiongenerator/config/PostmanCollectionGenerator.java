@@ -4,8 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
+import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -19,16 +19,15 @@ import java.io.IOException;
 import java.lang.reflect.Parameter;
 import java.util.*;
 
-@Configuration
+@Component
 public class PostmanCollectionGenerator {
 
 
     private final RequestMappingHandlerMapping requestMappingHandlerMapping;
-    private final   Environment environment;
+    private final Environment environment;
 
     @Value("${spring.application.name:Postman_Collection}")
     private String appName;
-
 
 
     @Autowired
